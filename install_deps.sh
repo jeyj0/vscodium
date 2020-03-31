@@ -5,7 +5,7 @@ if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
   brew install jq zip
 else
   sudo apt-get update
-  sudo apt-get install -y fakeroot jq
+  sudo apt-get install -yq fakeroot jq
   triplet=
   case $BUILDARCH in
   arm)
@@ -24,10 +24,10 @@ else
     echo "deb [arch=$arch] http://ports.ubuntu.com/ubuntu-ports/ trusty main" | sudo tee -a /etc/apt/sources.list.d/$arch.list >/dev/null
     sudo dpkg --add-architecture $arch
     sudo apt-get update
-    sudo apt-get install libc6-dev-$arch-cross gcc-$triplet g++-$triplet `apt-cache search x11proto | grep ^x11proto | cut -f 1 -d ' '` xz-utils pkg-config
+    sudo apt-get install -yq libc6-dev-$arch-cross gcc-$triplet g++-$triplet `apt-cache search x11proto | grep ^x11proto | cut -f 1 -d ' '` xz-utils pkg-config
     mkdir -p dl
     cd dl
-    apt-get download libx11-dev:$arch libx11-6:$arch libxkbfile-dev:$arch libxkbfile1:$arch libxau-dev:$arch libxdmcp-dev:$arch libxcb1-dev:$arch libsecret-1-dev:$arch libsecret-1-0:$arch libpthread-stubs0-dev:$arch libglib2.0-dev:$arch libglib2.0-0:$arch libffi-dev:$arch libffi6:$arch zlib1g:$arch libpcre3-dev:$arch libpcre3:$arch
+    apt-get download -yq libx11-dev:$arch libx11-6:$arch libxkbfile-dev:$arch libxkbfile1:$arch libxau-dev:$arch libxdmcp-dev:$arch libxcb1-dev:$arch libsecret-1-dev:$arch libsecret-1-0:$arch libpthread-stubs0-dev:$arch libglib2.0-dev:$arch libglib2.0-0:$arch libffi-dev:$arch libffi6:$arch zlib1g:$arch libpcre3-dev:$arch libpcre3:$arch
     for i in *.deb; do ar x $i; sudo tar -C / -xf data.tar.*; rm -f data.tar.*; done
     cd ..
     export CC=/usr/bin/$triplet-gcc
@@ -36,6 +36,6 @@ else
     export CXX_host=/usr/bin/g++
     export PKG_CONFIG_LIBDIR=/usr/lib/$triplet/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig
   else
-    sudo apt-get install libx11-dev libxkbfile-dev libsecret-1-dev rpm
+    sudo apt-get -yq install libx11-dev libxkbfile-dev libsecret-1-dev rpm
   fi
 fi
